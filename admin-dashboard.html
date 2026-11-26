@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Admin & Profit Analytics Dashboard | FF Scrims</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --surface: #11141c;
+      --surface-light: #181d28;
+      --border: #232a3b;
+      --primary: #f97316;
+      --primary-hover: #ea580c;
+      --accent: #38bdf8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --gold: #fbbf24;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Chakra Petch', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #b91c1c);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: var(--surface-light);
+      color: #fff;
+    }
+    .nav-btn.active {
+      background: rgba(249, 115, 22, 0.12);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Main Content Area */
+    main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      max-width: 1300px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .page-title {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    .kpi-sub {
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Interactive Calculator Section */
+    .calc-container {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 950px) {
+      .calc-container { grid-template-columns: 1fr; }
+      body { flex-direction: column; }
+      aside { width: 100%; height: auto; position: static; }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .input-field {
+      width: 100%;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+    }
+    .input-field:focus {
+      border-color: var(--primary);
+    }
+
+    .preset-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .preset-chip {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .preset-chip:hover {
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Calc Results Box */
+    .calc-output {
+      background: #0b0d14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .output-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+    .output-row.highlight {
+      border-bottom: none;
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 2px dashed var(--border);
+    }
+    .output-val {
+      font-weight: 700;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 16px;
+    }
+    .profit-grand {
+      font-size: 26px;
+      color: var(--success);
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    /* Button styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover {
+      border-color: #cbd5e1;
+      color: #fff;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: var(--surface-light);
+      padding: 12px 16px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badge */
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-verified {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .status-pending {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--gold);
+    }
+
+    /* Settlement Section */
+    .payout-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .player-payout-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--surface-light);
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside>
+    <div class="sidebar-brand">
+      <div class="brand-icon">FF</div>
+      <div>
+        <div class="brand-font" style="font-weight: 700; font-size: 16px;">HOST ADMIN</div>
+        <div style="font-size: 10px; color: var(--primary); font-weight: 600;">PROFIT & ANALYTICS</div>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li><button class="nav-btn active" onclick="switchTab('calculator', this)">📊 Match Calculator</button></li>
+      <li><button class="nav-btn" onclick="switchTab('history', this)">📜 Logged Matches</button></li>
+      <li><button class="nav-btn" onclick="switchTab('settlement', this)">💰 Fast Payout Generator</button></li>
+      <li><button class="nav-btn" onclick="switchTab('registrations', this)">👥 Slot Registrations</button></li>
+    </ul>
+
+    <div style="border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto;">
+      <a href="public-portal.html" target="_blank" class="btn btn-outline btn-sm" style="width: 100%; text-decoration: none;">🔗 Open Player Portal</a>
+    </div>
+  </aside>
+
+  <!-- Main Body -->
+  <main>
+    <div class="top-bar">
+      <div>
+        <h1 class="page-title" id="pageTitle">Match Profit Calculator</h1>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Real-time formula simulation based on entry fee, kills & zone deaths.</p>
+      </div>
+      <div>
+        <button onclick="resetData()" class="btn btn-danger btn-sm">Reset All Stats</button>
+      </div>
+    </div>
+
+    <!-- Summary KPI Header (Persistent across tabs) -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Revenue Collected</div>
+        <div class="kpi-value" id="kpiRevenue" style="color: #fff;">₹0</div>
+        <div class="kpi-sub" style="color: var(--text-muted);">From completed matches</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Prize Money Paid</div>
+        <div class="kpi-value" id="kpiPayouts" style="color: var(--gold);">₹0</div>
+        <div class="kpi-sub" style="color: var(--text-muted);">Transferred to winners</div>
+      </div>
+      <div class="kpi-card" style="border-color: rgba(16, 185, 129, 0.4);">
+        <div class="kpi-label">Net In-Hand Profit</div>
+        <div class="kpi-value" id="kpiProfit" style="color: var(--success);">₹0</div>
+        <div class="kpi-sub" style="color: var(--success);" id="kpiMargin">Margin: 0%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Matches Hosted</div>
+        <div class="kpi-value" id="kpiMatches" style="color: var(--accent);">0</div>
+        <div class="kpi-sub" style="color: var(--text-muted);" id="kpiAvgProfit">Avg: ₹0 / match</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: CALCULATOR & SIMULATOR -->
+    <div id="tab-calculator" class="tab-content">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Interactive Match Simulator</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">Uses Formula: <code>Profit = N(E - K) + (K - B) + (Z × K)</code></p>
+          </div>
+          <div class="preset-chips">
+            <span class="preset-chip" onclick="applyPreset(30, 15, 10, 20, 3)">⚡ ₹15 Solo (30p)</span>
+            <span class="preset-chip" onclick="applyPreset(48, 15, 10, 20, 4)">🔥 ₹15 Solo (Full 48p)</span>
+            <span class="preset-chip" onclick="applyPreset(35, 30, 20, 50, 3)">💎 ₹30 Bounty (35p)</span>
+            <span class="preset-chip" onclick="applyPreset(48, 30, 20, 50, 4)">🚀 ₹30 Bounty (Full 48p)</span>
+            <span class="preset-chip" onclick="applySquadPreset(12, 60, 300, 150, 100)">🛡️ ₹60 Squad (12 teams)</span>
+          </div>
+        </div>
+
+        <div class="calc-container">
+          <!-- Input Controls -->
+          <div>
+            <div class="form-row">
+              <div class="input-group">
+                <label>Number of Players (N)</label>
+                <input type="number" id="calcPlayers" class="input-field" value="35" min="2" max="48" oninput="calculate()">
+              </div>
+              <div class="input-group">
+                <label>Entry Fee per Head (E) ₹</label>
+                <input type="number" id="calcEntry" class="input-field" value="15" min="1" oninput="calculate()">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label>Bounty Per Kill (K) ₹</label>
+                <input type="number" id="calcKillPrize" class="input-field" value="10" min="0" oninput="calculate()">
+              </div>
+              <div class="input-group">
+                <label>Booyah Extra (B) ₹</label>
+                <input type="number" id="calcBooyah" class="input-field" value="20" min="0" oninput="calculate()">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Zone / Self-Eliminations (Z) [No bounty awarded]</label>
+              <input type="number" id="calcZone" class="input-field" value="3" min="0" max="15" oninput="calculate()">
+              <small style="color: var(--text-muted); font-size: 11px;">Typically 2 to 5 players die in the blue zone or fall damage.</small>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 12px;">
+              <button onclick="saveMatchToLog()" class="btn btn-primary" style="flex: 1;">💾 Save Match To Log</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Calculation Output Box -->
+          <div class="calc-output">
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 12px;">Financial Breakdown</div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Total Collection (N × E)</span>
+                <span class="output-val" id="outCollection" style="color: #fff;">₹525</span>
+              </div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Player Kill Deaths Rewarded</span>
+                <span class="output-val" id="outKillsCount">31 kills</span>
+              </div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Total Kill Payout</span>
+                <span class="output-val" id="outKillPayout" style="color: var(--gold);">₹310</span>
+              </div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Booyah Extra Prize</span>
+                <span class="output-val" id="outBooyahPayout" style="color: var(--gold);">₹20</span>
+              </div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Total Prize Pool Distributed</span>
+                <span class="output-val" id="outTotalPayout" style="color: var(--danger);">₹330</span>
+              </div>
+              <div class="output-row">
+                <span style="color: var(--text-muted);">Guaranteed Min. Profit (If Z=0)</span>
+                <span class="output-val" id="outWorstProfit" style="color: var(--accent);">₹165</span>
+              </div>
+            </div>
+
+            <div class="output-row highlight">
+              <div>
+                <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">YOUR ESTIMATED PROFIT</div>
+                <div style="font-size: 12px; color: var(--success);" id="outProfitMargin">Margin: 37.1%</div>
+              </div>
+              <div class="profit-grand" id="outNetProfit">₹195</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: MATCH LOGS -->
+    <div id="tab-history" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Completed Match Records</h3>
+          <button onclick="exportHistoryCSV()" class="btn btn-outline btn-sm">📥 Export to CSV</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Mode / Type</th>
+                <th>Players</th>
+                <th>Entry</th>
+                <th>Collection</th>
+                <th>Prize Paid</th>
+                <th>Net Profit</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="matchHistoryTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SETTLEMENT TOOL -->
+    <div id="tab-settlement" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Fast Payout List & Text Generator</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">Add players from your match scoreboard to instantly generate copyable WhatsApp/Telegram payout message.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+              <input type="text" id="setPlayerName" placeholder="Player In-Game Name (IGN)" class="input-field" style="flex: 2;">
+              <input type="number" id="setPlayerKills" placeholder="Kills" class="input-field" style="flex: 1;" min="0">
+              <input type="text" id="setPlayerUpi" placeholder="UPI ID / Phone" class="input-field" style="flex: 1.5;">
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 13px;">
+                <input type="checkbox" id="setPlayerBooyah"> ⭐ Won Booyah (+ Extra Prize)
+              </label>
+              <button onclick="addSettlementEntry()" class="btn btn-primary btn-sm">+ Add Player</button>
+            </div>
+
+            <div class="payout-list" id="payoutEntriesContainer">
+              <!-- Dynamically added -->
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">Generated WhatsApp / Telegram Message:</div>
+            <textarea id="payoutSummaryText" rows="12" class="input-field" style="width: 100%; font-family: monospace; font-size: 12px; resize: none;" readonly></textarea>
+            <button onclick="copyPayoutText()" class="btn btn-outline" style="width: 100%; margin-top: 10px;">📋 Copy Payout Summary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: REGISTRATIONS -->
+    <div id="tab-registrations" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Incoming Player Registrations</h3>
+          <button onclick="clearRegistrations()" class="btn btn-outline btn-sm">Clear List</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Reg ID</th>
+                <th>Player IGN</th>
+                <th>FF UID</th>
+                <th>WhatsApp</th>
+                <th>Match</th>
+                <th>UTR / Ref ID</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // App State
+    let matchesHistory = JSON.parse(localStorage.getItem('ff_matches_history') || '[]');
+    let currentSettlementPlayers = [];
+
+    // Switch Tabs
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).style.display = 'block';
+      if (btn) btn.classList.add('active');
+
+      const titles = {
+        calculator: 'Match Profit Calculator',
+        history: 'Completed Match Records & History',
+        settlement: 'Fast Payout Settlement Generator',
+        registrations: 'Slot Registrations & UTR Verification'
+      };
+      document.getElementById('pageTitle').innerText = titles[tabId] || 'Dashboard';
+
+      if (tabId === 'history') renderHistoryTable();
+      if (tabId === 'registrations') renderRegistrations();
+    }
+
+    // Core Calculation Logic
+    function calculate() {
+      const N = parseInt(document.getElementById('calcPlayers').value) || 0;
+      const E = parseFloat(document.getElementById('calcEntry').value) || 0;
+      const K = parseFloat(document.getElementById('calcKillPrize').value) || 0;
+      const B = parseFloat(document.getElementById('calcBooyah').value) || 0;
+      const Z = parseInt(document.getElementById('calcZone').value) || 0;
+
+      const totalCollection = N * E;
+      // Deaths = N - 1
+      const totalDeaths = Math.max(0, N - 1);
+      const rewardedKills = Math.max(0, totalDeaths - Z);
+      const killPayout = rewardedKills * K;
+      const totalPayout = killPayout + (N > 0 ? B : 0);
+      const netProfit = totalCollection - totalPayout;
+      const margin = totalCollection > 0 ? ((netProfit / totalCollection) * 100).toFixed(1) : 0;
+      
+      // Worst-case (Z = 0)
+      const worstCasePayout = (totalDeaths * K) + (N > 0 ? B : 0);
+      const worstCaseProfit = totalCollection - worstCasePayout;
+
+      // Update UI
+      document.getElementById('outCollection').innerText = '₹' + totalCollection.toLocaleString();
+      document.getElementById('outKillsCount').innerText = rewardedKills + ' kills rewarded';
+      document.getElementById('outKillPayout').innerText = '₹' + killPayout.toLocaleString();
+      document.getElementById('outBooyahPayout').innerText = '₹' + B.toLocaleString();
+      document.getElementById('outTotalPayout').innerText = '₹' + totalPayout.toLocaleString();
+      document.getElementById('outWorstProfit').innerText = '₹' + worstCaseProfit.toLocaleString();
+
+      const profitElem = document.getElementById('outNetProfit');
+      profitElem.innerText = '₹' + netProfit.toLocaleString();
+      profitElem.style.color = netProfit >= 0 ? 'var(--success)' : 'var(--danger)';
+
+      document.getElementById('outProfitMargin').innerText = `Margin: ${margin}%`;
+
+      return { N, E, K, B, Z, totalCollection, totalPayout, netProfit, margin };
+    }
+
+    function applyPreset(n, e, k, b, z) {
+      document.getElementById('calcPlayers').value = n;
+      document.getElementById('calcEntry').value = e;
+      document.getElementById('calcKillPrize').value = k;
+      document.getElementById('calcBooyah').value = b;
+      document.getElementById('calcZone').value = z;
+      calculate();
+    }
+
+    function applySquadPreset(teams, entryPerTeam, booyah, second, topKill) {
+      // For Squad of 12 teams (48 players), Entry per team e.g. 60
+      document.getElementById('calcPlayers').value = teams; // 12 teams
+      document.getElementById('calcEntry').value = entryPerTeam;
+      document.getElementById('calcKillPrize').value = 0; // Fixed placement prize model
+      document.getElementById('calcBooyah').value = booyah + second + topKill;
+      document.getElementById('calcZone').value = 0;
+      calculate();
+    }
+
+    // Save Match To History
+    function saveMatchToLog() {
+      const stats = calculate();
+      const match = {
+        id: 'M-' + Date.now().toString().slice(-4),
+        date: new Date().toLocaleString(),
+        type: stats.E <= 20 ? '₹15 Solo Rush' : (stats.E <= 35 ? '₹30 Solo Bounty' : 'Custom Scrim'),
+        players: stats.N,
+        entry: stats.E,
+        collection: stats.totalCollection,
+        payout: stats.totalPayout,
+        profit: stats.netProfit
+      };
+      matchesHistory.unshift(match);
+      localStorage.setItem('ff_matches_history', JSON.stringify(matchesHistory));
+      updateGlobalKPIs();
+      alert('Match successfully saved to records!');
+    }
+
+    function updateGlobalKPIs() {
+      let rev = 0, payouts = 0, profit = 0;
+      matchesHistory.forEach(m => {
+        rev += m.collection;
+        payouts += m.payout;
+        profit += m.profit;
+      });
+
+      document.getElementById('kpiRevenue').innerText = '₹' + rev.toLocaleString();
+      document.getElementById('kpiPayouts').innerText = '₹' + payouts.toLocaleString();
+      document.getElementById('kpiProfit').innerText = '₹' + profit.toLocaleString();
+      document.getElementById('kpiMatches').innerText = matchesHistory.length;
+
+      const margin = rev > 0 ? ((profit / rev) * 100).toFixed(1) : 0;
+      document.getElementById('kpiMargin').innerText = `Margin: ${margin}%`;
+
+      const avg = matchesHistory.length > 0 ? Math.round(profit / matchesHistory.length) : 0;
+      document.getElementById('kpiAvgProfit').innerText = `Avg: ₹${avg} / match`;
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('matchHistoryTableBody');
+      if (matchesHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">No completed matches logged yet. Run simulations and click "Save Match To Log".</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = matchesHistory.map((m, idx) => `
+        <tr>
+          <td>${m.date}</td>
+          <td><strong>${m.type}</strong></td>
+          <td>${m.players}</td>
+          <td>₹${m.entry}</td>
+          <td style="color:#fff;">₹${m.collection}</td>
+          <td style="color:var(--gold);">₹${m.payout}</td>
+          <td style="color:var(--success); font-weight:700;">+₹${m.profit}</td>
+          <td><button onclick="deleteMatch(${idx})" class="btn btn-danger btn-sm">Delete</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteMatch(idx) {
+      if (confirm('Delete this match record?')) {
+        matchesHistory.splice(idx, 1);
+        localStorage.setItem('ff_matches_history', JSON.stringify(matchesHistory));
+        renderHistoryTable();
+        updateGlobalKPIs();
+      }
+    }
+
+    function exportHistoryCSV() {
+      if (matchesHistory.length === 0) return alert('No records to export!');
+      let csv = 'Match ID,Date,Type,Players,Entry Fee,Collection,Payout,Profit\n';
+      matchesHistory.forEach(m => {
+        csv += `${m.id},"${m.date}","${m.type}",${m.players},${m.entry},${m.collection},${m.payout},${m.profit}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ff_scrims_income_records.csv';
+      a.click();
+    }
+
+    // Fast Settlement Tool
+    function addSettlementEntry() {
+      const ign = document.getElementById('setPlayerName').value.trim();
+      const kills = parseInt(document.getElementById('setPlayerKills').value) || 0;
+      const upi = document.getElementById('setPlayerUpi').value.trim() || 'Pending';
+      const isBooyah = document.getElementById('setPlayerBooyah').checked;
+      const killPrize = parseFloat(document.getElementById('calcKillPrize').value) || 10;
+      const booyahPrize = parseFloat(document.getElementById('calcBooyah').value) || 20;
+
+      if (!ign) return alert('Enter player IGN');
+
+      const killAmt = kills * killPrize;
+      const booyahAmt = isBooyah ? booyahPrize : 0;
+      const total = killAmt + booyahAmt;
+
+      currentSettlementPlayers.push({ ign, kills, isBooyah, upi, total });
+
+      // Reset input fields
+      document.getElementById('setPlayerName').value = '';
+      document.getElementById('setPlayerKills').value = '';
+      document.getElementById('setPlayerBooyah').checked = false;
+
+      renderSettlementList();
+    }
+
+    function renderSettlementList() {
+      const container = document.getElementById('payoutEntriesContainer');
+      container.innerHTML = currentSettlementPlayers.map((p, idx) => `
+        <div class="player-payout-row">
+          <div style="flex: 2; font-weight: 600; color: #fff;">${p.ign} ${p.isBooyah ? '👑' : ''}</div>
+          <div style="flex: 1; color: var(--text-muted); font-size: 13px;">${p.kills} Kills</div>
+          <div style="flex: 1; font-weight: 700; color: var(--gold);">₹${p.total}</div>
+          <button onclick="removeSettlementEntry(${idx})" style="background:none; border:none; color:var(--danger); cursor:pointer;">✕</button>
+        </div>
+      `).join('');
+
+      generatePayoutText();
+    }
+
+    function removeSettlementEntry(idx) {
+      currentSettlementPlayers.splice(idx, 1);
+      renderSettlementList();
+    }
+
+    function generatePayoutText() {
+      let text = `🏆 *APEX SCRIMS MATCH RESULTS & PAYOUTS* 🏆\n\n`;
+      let grandTotal = 0;
+      currentSettlementPlayers.forEach((p, i) => {
+        text += `${i + 1}. *${p.ign}* ${p.isBooyah ? '(BOOYAH 👑)' : ''}\n`;
+        text += `   - Kills: ${p.kills} | Prize: ₹${p.total} | UPI: ${p.upi}\n`;
+        grandTotal += p.total;
+      });
+      text += `\n💰 *Total Prize Money Distributed:* ₹${grandTotal}\n`;
+      text += `⚡ Payout status: Processed instantly via UPI.\n`;
+      text += `📩 Contact Admin if any issue with your prize receipt!`;
+
+      document.getElementById('payoutSummaryText').value = text;
+    }
+
+    function copyPayoutText() {
+      const textarea = document.getElementById('payoutSummaryText');
+      textarea.select();
+      navigator.clipboard.writeText(textarea.value);
+      alert('Payout summary copied! Paste it in your WhatsApp/Telegram channel.');
+    }
+
+    // Registrations Tab
+    function renderRegistrations() {
+      const list = JSON.parse(localStorage.getItem('ff_scrims_registrations') || '[]');
+      const tbody = document.getElementById('registrationsTableBody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">No player registrations submitted yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map((r, i) => `
+        <tr>
+          <td>${r.id}</td>
+          <td><strong>${r.ign}</strong></td>
+          <td>${r.uid}</td>
+          <td>${r.phone}</td>
+          <td>${r.matchName} (${r.fee})</td>
+          <td><code style="color:var(--gold);">${r.utr}</code></td>
+          <td><span class="status-badge ${r.verified ? 'status-verified' : 'status-pending'}">${r.verified ? 'VERIFIED' : 'PENDING'}</span></td>
+          <td>
+            <button onclick="toggleVerifyReg(${i})" class="btn btn-outline btn-sm">${r.verified ? 'Unverify' : 'Verify'}</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleVerifyReg(idx) {
+      const list = JSON.parse(localStorage.getItem('ff_scrims_registrations') || '[]');
+      if (list[idx]) {
+        list[idx].verified = !list[idx].verified;
+        localStorage.setItem('ff_scrims_registrations', JSON.stringify(list));
+        renderRegistrations();
+      }
+    }
+
+    function clearRegistrations() {
+      if (confirm('Clear all registration entries?')) {
+        localStorage.removeItem('ff_scrims_registrations');
+        renderRegistrations();
+      }
+    }
+
+    function resetData() {
+      if (confirm('Warning: This will clear all logged matches, income history, and registrations. Proceed?')) {
+        localStorage.clear();
+        matchesHistory = [];
+        currentSettlementPlayers = [];
+        updateGlobalKPIs();
+        renderHistoryTable();
+        renderSettlementList();
+        renderRegistrations();
+        calculate();
+      }
+    }
+
+    // Initialize
+    calculate();
+    updateGlobalKPIs();
+  </script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX BATTLEGROUNDS | Free Fire Paid Scrims</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0b0e;
+      --card-bg: #13161c;
+      --card-border: #232834;
+      --primary-orange: #ff5e15;
+      --primary-hover: #ff7738;
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.25);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-cyan: #06b6d4;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Chakra Petch', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Ambient background glow */
+    .bg-glow {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 94, 21, 0.18) 0%, rgba(10, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navigation */
+    nav {
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(10, 11, 14, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-orange), #b91c1c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 0 15px rgba(255, 94, 21, 0.4);
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-link:hover {
+      color: var(--primary-orange);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-orange), #ea580c);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 94, 21, 0.35);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover), #f97316);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      border-color: var(--primary-orange);
+      color: var(--primary-orange);
+    }
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 13px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+    .hero-tag {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(255, 94, 21, 0.12);
+      border: 1px solid rgba(255, 94, 21, 0.3);
+      color: var(--primary-orange);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto 30px;
+    }
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+    .trust-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    /* Section Styling */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      margin-top: 50px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--primary-orange);
+      border-radius: 2px;
+    }
+
+    /* Match Cards Grid */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+    .match-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .match-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 94, 21, 0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .badge-mode {
+      background: #1e2430;
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .badge-squad {
+      color: #a855f7;
+      border-color: rgba(168, 85, 247, 0.3);
+    }
+    .entry-pill {
+      background: rgba(255, 94, 21, 0.15);
+      border: 1px solid var(--primary-orange);
+      color: var(--primary-orange);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+    .match-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .match-schedule {
+      color: var(--text-muted);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    /* Prize details inside card */
+    .prize-box {
+      background: #0d0f14;
+      border: 1px solid #1a202c;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+    .prize-col {
+      flex: 1;
+    }
+    .prize-col:not(:last-child) {
+      border-right: 1px solid #1f2937;
+    }
+    .prize-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .prize-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    .slots-progress {
+      margin-bottom: 18px;
+    }
+    .slots-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: #1e2430;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-orange), var(--gold));
+      border-radius: 3px;
+    }
+
+    /* Rules Banner */
+    .rules-card {
+      background: #12151c;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--primary-orange);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 50px;
+    }
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .rule-icon {
+      color: var(--primary-orange);
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    /* Payment & Proof section */
+    .payouts-preview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    @media (max-width: 768px) {
+      .payouts-preview { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 32px; }
+    }
+    .upi-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    .qr-container {
+      width: 170px;
+      height: 170px;
+      margin: 16px auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .upi-id-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e2430;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      color: var(--gold);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    /* Modal Form */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      width: 100%;
+      max-width: 520px;
+      border-radius: 16px;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: #fff; }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-control {
+      width: 100%;
+      background: #0d0f14;
+      border: 1px solid #272d3b;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--primary-orange);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="#" class="brand-logo">
+        <div class="brand-badge">FF</div>
+        <div>
+          <div class="brand-font" style="font-weight: 700; font-size: 18px;">APEX SCRIMS</div>
+          <div style="font-size: 10px; color: var(--primary-orange); letter-spacing: 1.5px; font-weight: 600;">OFFICIAL TOURNAMENTS</div>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#matches" class="nav-link">Upcoming Matches</a>
+        <a href="#rules" class="nav-link">Rules</a>
+        <a href="#payouts" class="nav-link">Payment Info</a>
+        <a href="javascript:void(0)" onclick="openRegisterModal()" class="btn btn-primary btn-sm">Book Slot</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="container hero">
+    <span class="hero-tag">🔥 DAILY PAID CUSTOM ROOMS</span>
+    <h1>COMPETE. DOMINATE. GET PAID.</h1>
+    <p>Join high-intensity Free Fire paid scrims with guaranteed per-kill bounties and instant UPI payouts right after the match.</p>
+
+    <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+      <a href="#matches" class="btn btn-primary">Browse Matches</a>
+      <a href="https://t.me" target="_blank" class="btn btn-outline">Join Telegram Channel</a>
+      <a href="https://whatsapp.com" target="_blank" class="btn btn-outline" style="border-color: #22c55e; color: #22c55e;">Join WhatsApp Group</a>
+    </div>
+
+    <div class="trust-badges">
+      <div class="trust-item"><span class="trust-dot"></span> No Revivals Allowed</div>
+      <div class="trust-item"><span class="trust-dot"></span> Payout within 10 Mins</div>
+      <div class="trust-item"><span class="trust-dot"></span> Strict Anti-Cheat & Screen Record</div>
+      <div class="trust-item"><span class="trust-dot"></span> 100% Verified Admins</div>
+    </div>
+  </section>
+
+  <!-- Matches Section -->
+  <section class="container" id="matches">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Today's Match Lineup</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Select your preferred slot and secure entry before lobby is full.</p>
+      </div>
+    </div>
+
+    <div class="matches-grid" id="matchesContainer">
+      <!-- Card 1: 15 Solo -->
+      <div class="match-card">
+        <div class="match-header">
+          <span class="badge-mode">SOLO BR</span>
+          <span class="entry-pill">₹15 Entry</span>
+        </div>
+        <div class="match-title">Solo Quick Rush #01</div>
+        <div class="match-schedule">
+          <span>🕒 Today at 07:00 PM IST</span> • <span>🗺️ Bermuda</span>
+        </div>
+        <div class="prize-box">
+          <div class="prize-col">
+            <div class="prize-label">Per Kill</div>
+            <div class="prize-val">₹10</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">Booyah Extra</div>
+            <div class="prize-val">+₹20</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">Max Slots</div>
+            <div class="prize-val" style="color: var(--text-main);">48</div>
+          </div>
+        </div>
+        <div class="slots-progress">
+          <div class="slots-info">
+            <span>Filled Slots</span>
+            <span style="font-weight: 600; color: #fff;">28 / 48</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 58%;"></div>
+          </div>
+        </div>
+        <button onclick="openRegisterModal('Solo Quick Rush #01', 15)" class="btn btn-primary" style="width: 100%;">Book Solo Slot (₹15)</button>
+      </div>
+
+      <!-- Card 2: 30 Solo -->
+      <div class="match-card">
+        <div class="match-header">
+          <span class="badge-mode" style="color: var(--gold); border-color: rgba(245, 158, 11, 0.4);">HIGH BOUNTY</span>
+          <span class="entry-pill" style="border-color: var(--gold); color: var(--gold);">₹30 Entry</span>
+        </div>
+        <div class="match-title">Solo Bounty Hunter #02</div>
+        <div class="match-schedule">
+          <span>🕒 Today at 08:30 PM IST</span> • <span>🗺️ Purgatory</span>
+        </div>
+        <div class="prize-box">
+          <div class="prize-col">
+            <div class="prize-label">Per Kill</div>
+            <div class="prize-val" style="color: var(--primary-orange);">₹20</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">Booyah Extra</div>
+            <div class="prize-val">+₹50</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">Max Slots</div>
+            <div class="prize-val" style="color: var(--text-main);">48</div>
+          </div>
+        </div>
+        <div class="slots-progress">
+          <div class="slots-info">
+            <span>Filled Slots</span>
+            <span style="font-weight: 600; color: #fff;">34 / 48</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 70%;"></div>
+          </div>
+        </div>
+        <button onclick="openRegisterModal('Solo Bounty Hunter #02', 30)" class="btn btn-primary" style="width: 100%;">Book Solo Slot (₹30)</button>
+      </div>
+
+      <!-- Card 3: 60 Squad -->
+      <div class="match-card">
+        <div class="match-header">
+          <span class="badge-mode badge-squad">SQUAD WAR</span>
+          <span class="entry-pill">₹60 Team</span>
+        </div>
+        <div class="match-title">Guild Clash Squad #03</div>
+        <div class="match-schedule">
+          <span>🕒 Today at 10:00 PM IST</span> • <span>🗺️ Bermuda</span>
+        </div>
+        <div class="prize-box">
+          <div class="prize-col">
+            <div class="prize-label">1st (Booyah)</div>
+            <div class="prize-val">₹300</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">2nd Place</div>
+            <div class="prize-val">₹150</div>
+          </div>
+          <div class="prize-col">
+            <div class="prize-label">Top Kill Team</div>
+            <div class="prize-val">₹100</div>
+          </div>
+        </div>
+        <div class="slots-progress">
+          <div class="slots-info">
+            <span>Filled Teams</span>
+            <span style="font-weight: 600; color: #fff;">8 / 12 Teams</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 66%;"></div>
+          </div>
+        </div>
+        <button onclick="openRegisterModal('Guild Clash Squad #03', 60)" class="btn btn-primary" style="width: 100%;">Book Squad Slot (₹60)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rules Section -->
+  <section class="container" id="rules">
+    <div class="rules-card">
+      <h3 style="font-size: 20px; color: #fff; margin-bottom: 8px;">Tournament Rules & Fair Play Policy</h3>
+      <p style="color: var(--text-muted); font-size: 13px;">Breaking any rule results in immediate disqualification and forfeiture of entry fee & prizes.</p>
+      
+      <div class="rules-grid">
+        <div class="rule-item">
+          <span class="rule-icon">⛔</span>
+          <div><strong>NO Revival Points or Heart Cards:</strong> Complete classic BR. When you die, you are out. No second lives.</div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⛔</span>
+          <div><strong>NO Auto-Revival (Horizaline):</strong> Character passive or active revival kits are turned completely OFF in settings.</div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">📱</span>
+          <div><strong>Mobile Only (No PC / Emulators):</strong> Pure mobile device lobby. Emulators are strictly kicked without refund.</div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🎥</span>
+          <div><strong>Record Gameplay / Screenshot:</strong> Winning players must submit a screenshot of the end scorecard showing UID and Kills to claim UPI payment.</div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🛡️</span>
+          <div><strong>Minimum Level 40+:</strong> Accounts below level 40 are not permitted to prevent burner hacker accounts.</div>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⚡</span>
+          <div><strong>Room Details:</strong> Room ID & Password will be sent to your WhatsApp 10 minutes prior to match time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment & Contact Section -->
+  <section class="container" id="payouts">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Payment & Prize Settlement</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Scan to pay entry fee via any UPI app (GPay, PhonePe, Paytm).</p>
+      </div>
+    </div>
+
+    <div class="payouts-preview">
+      <div class="upi-box">
+        <h4 style="font-size: 18px; margin-bottom: 6px;">Official Admin Payment QR</h4>
+        <p style="color: var(--text-muted); font-size: 13px;">Scan & pay your entry fee, then submit UTR / Ref No.</p>
+        <div class="qr-container">
+          <!-- Placeholder QR SVG -->
+          <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <rect width="100" height="100" fill="#fff" />
+            <!-- Corners -->
+            <rect x="10" y="10" width="25" height="25" fill="#000" />
+            <rect x="15" y="15" width="15" height="15" fill="#fff" />
+            <rect x="19" y="19" width="7" height="7" fill="#000" />
+
+            <rect x="65" y="10" width="25" height="25" fill="#000" />
+            <rect x="70" y="15" width="15" height="15" fill="#fff" />
+            <rect x="74" y="19" width="7" height="7" fill="#000" />
+
+            <rect x="10" y="65" width="25" height="25" fill="#000" />
+            <rect x="15" y="70" width="15" height="15" fill="#fff" />
+            <rect x="19" y="74" width="7" height="7" fill="#000" />
+
+            <!-- Pattern dots -->
+            <rect x="42" y="15" width="6" height="6" fill="#000" />
+            <rect x="42" y="28" width="6" height="6" fill="#000" />
+            <rect x="42" y="42" width="16" height="16" fill="#000" />
+            <rect x="68" y="42" width="6" height="6" fill="#000" />
+            <rect x="15" y="48" width="6" height="6" fill="#000" />
+            <rect x="68" y="68" width="12" height="12" fill="#000" />
+            <rect x="45" y="75" width="8" height="8" fill="#000" />
+          </svg>
+        </div>
+        <div class="upi-id-badge" id="upiIdDisplay">
+          <span>scrims.apex@upi</span>
+          <button onclick="copyUpi()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" title="Copy UPI ID">📋</button>
+        </div>
+      </div>
+
+      <div class="upi-box" style="text-align: left;">
+        <h4 style="font-size: 18px; margin-bottom: 12px;">Instant Payout Guarantee</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          Our tournament admins calculate kill bounties directly from the post-match scoreboard. Payouts are transferred immediately via UPI within 5–10 minutes of match completion.
+        </p>
+
+        <div style="background: #0d0f14; padding: 14px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: var(--text-muted);">Example Solo ₹15 Settlement:</div>
+          <div style="font-size: 14px; color: #fff; margin-top: 4px;">Player: <strong>Raistar_99</strong> (4 Kills + Booyah)</div>
+          <div style="font-size: 15px; color: var(--gold); font-weight: 700; margin-top: 2px;">
+            (4 × ₹10) + ₹20 Booyah = <span style="color: var(--success);">₹60 Received</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <a href="https://wa.me" target="_blank" class="btn btn-outline btn-sm" style="flex: 1;">WhatsApp Admin Support</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration Modal -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeRegisterModal()">✕</button>
+      <h3 style="font-size: 22px; margin-bottom: 6px;">Register For Match</h3>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Enter your player details and payment reference to book your slot.</p>
+
+      <form id="slotBookingForm" onsubmit="handleRegistration(event)">
+        <div class="form-group">
+          <label>Selected Match</label>
+          <input type="text" class="form-control" id="formMatchName" value="Solo Quick Rush #01" readonly style="background: #1e2430; font-weight: 600; color: var(--primary-orange);">
+        </div>
+
+        <div class="form-group">
+          <label>Entry Fee</label>
+          <input type="text" class="form-control" id="formEntryFee" value="₹15" readonly style="background: #1e2430; font-weight: 700; color: var(--gold);">
+        </div>
+
+        <div class="form-group">
+          <label>In-Game Name (IGN) *</label>
+          <input type="text" class="form-control" id="formIgn" placeholder="e.g. 亗 DARK•SOUL 亗" required>
+        </div>
+
+        <div class="form-group">
+          <label>Free Fire UID (Account ID) *</label>
+          <input type="text" class="form-control" id="formUid" placeholder="e.g. 1982736452" required pattern="[0-9]{8,12}">
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp Number (For Room ID/Password) *</label>
+          <input type="tel" class="form-control" id="formPhone" placeholder="e.g. 9876543210" required>
+        </div>
+
+        <div class="form-group">
+          <label>UPI Transaction ID / UTR Ref No *</label>
+          <input type="text" class="form-control" id="formUtr" placeholder="12-digit UPI reference number" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 12px;">Confirm Slot Booking</button>
+      </form>
+
+      <div id="bookingSuccessBox" style="display:none; text-align: center; padding: 20px 0;">
+        <div style="font-size: 40px; margin-bottom: 8px;">🎉</div>
+        <h4 style="color: var(--success); font-size: 20px;">Slot Reserved Successfully!</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 8px 0 16px;">
+          Your registration has been logged. Admin will verify your UTR and send the Room ID & Password to your WhatsApp 10 mins before match start.
+        </p>
+        <button onclick="closeRegisterModal()" class="btn btn-outline btn-sm">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 APEX BATTLEGROUNDS. All rights reserved. Free Fire is a registered trademark of Garena. This tournament is an independent community event.</p>
+    </div>
+  </footer>
+
+  <script>
+    function openRegisterModal(matchTitle = 'Solo Quick Rush #01', fee = 15) {
+      document.getElementById('formMatchName').value = matchTitle;
+      document.getElementById('formEntryFee').value = '₹' + fee;
+      document.getElementById('slotBookingForm').style.display = 'block';
+      document.getElementById('bookingSuccessBox').style.display = 'none';
+      document.getElementById('registerModal').classList.add('active');
+    }
+
+    function closeRegisterModal() {
+      document.getElementById('registerModal').classList.remove('active');
+    }
+
+    function copyUpi() {
+      navigator.clipboard.writeText('scrims.apex@upi');
+      alert('UPI ID copied to clipboard: scrims.apex@upi');
+    }
+
+    function handleRegistration(e) {
+      e.preventDefault();
+      const matchName = document.getElementById('formMatchName').value;
+      const fee = document.getElementById('formEntryFee').value;
+      const ign = document.getElementById('formIgn').value;
+      const uid = document.getElementById('formUid').value;
+      const phone = document.getElementById('formPhone').value;
+      const utr = document.getElementById('formUtr').value;
+
+      const registration = {
+        id: 'REG-' + Date.now().toString().slice(-5),
+        matchName,
+        fee,
+        ign,
+        uid,
+        phone,
+        utr,
+        timestamp: new Date().toISOString(),
+        verified: false
+      };
+
+      // Store locally so admin app can see registrations
+      const existing = JSON.parse(localStorage.getItem('ff_scrims_registrations') || '[]');
+      existing.unshift(registration);
+      localStorage.setItem('ff_scrims_registrations', JSON.stringify(existing));
+
+      document.getElementById('slotBookingForm').style.display = 'none';
+      document.getElementById('bookingSuccessBox').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
